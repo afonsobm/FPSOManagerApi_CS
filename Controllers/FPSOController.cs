@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FPSOManagerApi_CS.DTO;
 using FPSOManagerApi_CS.Models;
+using FPSOManagerApi_CS.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +15,12 @@ namespace FPSOManagerApi_CS.Controllers
     public class FPSOController : ControllerBase
     {
         private readonly ILogger<FPSOController> _logger;
+        private readonly VesselServices _vesselServices;
 
-        public FPSOController(ILogger<FPSOController> logger)
+        public FPSOController(ILogger<FPSOController> logger, VesselServices vesselServices)
         {
             _logger = logger;
+            _vesselServices = vesselServices;
         }
 
         [HttpPost("vessel")]
@@ -25,27 +29,22 @@ namespace FPSOManagerApi_CS.Controllers
             return Ok();
         }
 
-        [HttpGet("vessel")]
-        public IActionResult GetVessel()
+        [HttpPost("equipment")]
+        public IActionResult PostEquipment([FromBody] EquipmentDto equipment)
         {
-            Equipment e = new Equipment
-            {
-                name = "test",
-                code = "abc123",
-                location = "Brazil",
-                active = true
-            };
+            return Ok();
+        }
 
-            List<Equipment> le = new List<Equipment>();
-            le.Add(e);
-            Vessel v = new Vessel
-            {
-                code = "mv102",
-                equipments = le
-            };
-            
-            
-            return Ok(v);
+        [HttpPut("equipment")]
+        public IActionResult PutInactiveEquipment([FromBody] List<String> codes)
+        {
+            return Ok();
+        }
+
+        [HttpGet("vessel")]
+        public IActionResult GetVesselEquipment(String code)
+        {   
+            return Ok();
         }
 
         
