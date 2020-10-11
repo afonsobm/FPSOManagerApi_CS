@@ -64,13 +64,37 @@ namespace FPSOManagerApi_CS.Controllers
         [HttpPut("equipment")]
         public IActionResult PutInactiveEquipment([FromBody] List<String> codes)
         {
-            return Ok();
+            try
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | Begin Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                _FPSOServices.UpdateEquipmentsToInactive(codes);
+
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - SUCCESS", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return NoContent();
+            }
+            catch (BusinessException ex)
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - FAIL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return StatusCode((int)ex.statusCode, ex.message);
+            }
         }
 
         [HttpGet("vessel")]
-        public IActionResult GetVesselEquipment(String code)
+        public IActionResult GetVesselEquipment(String vesselCode)
         {   
-            return Ok();
+            try
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | Begin Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                List<Equipment> activeEquipments = _FPSOServices.GetEquipmentsFromVessel(vesselCode);
+
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - SUCCESS", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return Ok(activeEquipments);
+            }
+            catch (BusinessException ex)
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - FAIL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return StatusCode((int)ex.statusCode, ex.message);
+            }
         }
 
         

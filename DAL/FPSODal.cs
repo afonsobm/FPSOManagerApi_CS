@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FPSOManagerApi_CS.Models;
@@ -39,6 +40,18 @@ namespace FPSOManagerApi_CS.DAL
             return _dbContext.equipment.Where(v => v.code.Equals(equipmentCode)).FirstOrDefault();
         }
 
+        public List<Equipment> GetEquipments(List<String> equipmentCodes)
+        {
+            _logger.LogInformation("{0} | {1} | {2} | {3} | Begin DAL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+            return _dbContext.equipment.Where(v => equipmentCodes.Contains(v.code))?.ToList();
+        }
+
+        public List<Equipment> GetActiveEquipments(string vesselCode)
+        {
+            _logger.LogInformation("{0} | {1} | {2} | {3} | Begin DAL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+            return _dbContext.equipment.Where(v => v.Vesselcode.Equals(vesselCode) && v.active.Equals(true))?.ToList();
+        }
+
         public Vessel InsertVessel(string vesselCode)
         {
             _logger.LogInformation("{0} | {1} | {2} | {3} | Begin DAL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
@@ -58,6 +71,15 @@ namespace FPSOManagerApi_CS.DAL
 
             _logger.LogInformation("{0} | {1} | {2} | {3} | End DAL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
             return equipment;
+        }
+
+        public void UpdateEquipments(List<Equipment> equipments)
+        {
+            _logger.LogInformation("{0} | {1} | {2} | {3} | Begin DAL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+            _dbContext.UpdateRange(equipments);
+            _dbContext.SaveChanges();
+
+            _logger.LogInformation("{0} | {1} | {2} | {3} | End DAL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
         }
     }
 }
