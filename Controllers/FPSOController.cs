@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using FPSOManagerApi_CS.DTO;
 using FPSOManagerApi_CS.Models;
@@ -26,6 +27,17 @@ namespace FPSOManagerApi_CS.Controllers
         [HttpPost("vessel")]
         public IActionResult PostVessel(string vesselCode)
         {
+            try
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | Begin Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+            }
+            
+
+            
             return Ok();
         }
 

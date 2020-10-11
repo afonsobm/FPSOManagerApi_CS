@@ -13,7 +13,12 @@ namespace FPSOManagerApi_CS.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-               builder.Entity<Contato>().HasKey(m => m.Id);
+               builder.Entity<Vessel>()
+               .HasKey(e => e.code);
+
+               builder.Entity<Equipment>()
+               .HasKey(e => e.code);
+
                base.OnModelCreating(builder);
         }
     }

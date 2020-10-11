@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FPSOManagerApi_CS.DAL;
+using FPSOManagerApi_CS.Models;
 using FPSOManagerApi_CS.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,6 +31,9 @@ namespace FPSOManagerApi_CS
         {
             services.AddControllers();
 
+            var connection = Configuration.GetConnectionString("sqlite");
+            services.AddDbContext<FPSODbContext>(options => options.UseSqlite(connection));
+
             services.AddScoped<VesselDal>();
             services.AddScoped<VesselServices>();
         }
@@ -41,7 +46,7 @@ namespace FPSOManagerApi_CS
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
