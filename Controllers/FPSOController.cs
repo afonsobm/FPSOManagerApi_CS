@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using FPSOManagerApi_CS.DTO;
 using FPSOManagerApi_CS.Models;
 using FPSOManagerApi_CS.Services;
 using FPSOManagerApi_CS.Utils;
@@ -17,12 +16,12 @@ namespace FPSOManagerApi_CS.Controllers
     public class FPSOController : ControllerBase
     {
         private readonly ILogger<FPSOController> _logger;
-        private readonly VesselServices _vesselServices;
+        private readonly FPSOServices _FPSOServices;
 
-        public FPSOController(ILogger<FPSOController> logger, VesselServices vesselServices)
+        public FPSOController(ILogger<FPSOController> logger, FPSOServices FPSOServices)
         {
             _logger = logger;
-            _vesselServices = vesselServices;
+            _FPSOServices = FPSOServices;
         }
 
         [HttpPost("vessel")]
@@ -31,7 +30,7 @@ namespace FPSOManagerApi_CS.Controllers
             try
             {
                 _logger.LogInformation("{0} | {1} | {2} | {3} | Begin Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
-                VesselDto vessel = _vesselServices.InsertVessel(vesselCode);
+                Vessel vessel = _FPSOServices.InsertVessel(vesselCode);
 
                 _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - SUCCESS", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
                 return Created("", vessel);
@@ -44,9 +43,22 @@ namespace FPSOManagerApi_CS.Controllers
         }
 
         [HttpPost("equipment")]
-        public IActionResult PostEquipment([FromBody] EquipmentDto equipment)
+        public IActionResult PostEquipment(string vesselCode, [FromBody] Equipment equipment)
         {
-            return Ok();
+            try
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | Begin Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                equipment.Vesselcode = vesselCode;
+                Equipment insertedEquipment = _FPSOServices.InsertEquipment(equipment);
+
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - SUCCESS", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return Created("", insertedEquipment);
+            }
+            catch (BusinessException ex)
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - FAIL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return StatusCode((int)ex.statusCode, ex.message);
+            }
         }
 
         [HttpPut("equipment")]

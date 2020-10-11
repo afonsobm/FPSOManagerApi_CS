@@ -34,8 +34,8 @@ namespace FPSOManagerApi_CS
             var connection = Configuration.GetConnectionString("sqlite");
             services.AddDbContext<FPSODbContext>(options => options.UseSqlite(connection));
 
-            services.AddScoped<VesselDal>();
-            services.AddScoped<VesselServices>();
+            services.AddScoped<FPSODal>();
+            services.AddScoped<FPSOServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
