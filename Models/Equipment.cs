@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FPSOManagerApi_CS.DTO;
 
 namespace FPSOManagerApi_CS.Models
 {
-    public class Equipment
+    public class Equipment : EquipmentDto
     {
-        public String name { get; set; }
-        public String code { get; set; }
-        public String location { get; set; }
-        public Boolean active { get; set; }
+        
     }
 }

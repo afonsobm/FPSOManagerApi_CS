@@ -5,8 +5,8 @@ namespace FPSOManagerApi_CS.Utils
 {
     public class BusinessException : Exception
     {
-        private HttpStatusCode statusCode { get; set; }
-        private string message { get; set; }
+        public HttpStatusCode statusCode { get; set; }
+        public string message { get; set; }
 
         public BusinessException()
         {

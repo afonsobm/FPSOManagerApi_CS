@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FPSOManagerApi_CS.DTO;
 using FPSOManagerApi_CS.Models;
 using FPSOManagerApi_CS.Services;
+using FPSOManagerApi_CS.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -30,15 +31,16 @@ namespace FPSOManagerApi_CS.Controllers
             try
             {
                 _logger.LogInformation("{0} | {1} | {2} | {3} | Begin Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
-            }
-            
+                VesselDto vessel = _vesselServices.InsertVessel(vesselCode);
 
-            
-            return Ok();
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - SUCCESS", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return Created("", vessel);
+            }
+            catch (BusinessException ex)
+            {
+                _logger.LogInformation("{0} | {1} | {2} | {3} | End Controller - FAIL", DateTime.Now, "INFO", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+                return StatusCode((int)ex.statusCode, ex.message);
+            }
         }
 
         [HttpPost("equipment")]
