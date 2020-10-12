@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FPSOManagerApi_CS.Models;
 using FPSOManagerApi_CS.Services;
 using FPSOManagerApi_CS.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -24,6 +25,20 @@ namespace FPSOManagerApi_CS.Controllers
             _FPSOServices = FPSOServices;
         }
 
+
+        /// <summary>
+        /// Registers a vessel.
+        /// </summary>
+        /// <remarks>
+        /// Sample request: POST /FPSO/vessel
+        ///     
+        /// </remarks>
+        /// <param name="vesselCode"></param>
+        /// <returns>A newly registered Vessel</returns>
+        /// <response code="201">Vessel Registered Successfully</response>
+        /// <response code="409">Vessel Already Registered</response>   
+        [ProducesResponseType(typeof(Vessel), 201)]
+        [ProducesResponseType(typeof(String), 409)]
         [HttpPost("vessel")]
         public IActionResult PostVessel(string vesselCode)
         {
@@ -42,6 +57,28 @@ namespace FPSOManagerApi_CS.Controllers
             }
         }
 
+        /// <summary>
+        /// Registers an equipment to a registered vessel.
+        /// </summary>
+        /// <remarks>
+        /// Sample request: POST /FPSO/equipment
+        ///     
+        ///     {
+        ///         "name": "name_example",
+        ///         "code": "code_example",
+        ///         "location": "location_example"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <param name="vesselCode"></param>
+        /// <param name="equipment"></param>
+        /// <returns>A newly registered equipment</returns>
+        /// <response code="201">Equipment Registered Successfully</response>
+        /// <response code="404">Vessel Not Registered</response>   
+        /// <response code="409">Equipment Already Registered</response>   
+        [ProducesResponseType(typeof(Equipment), 201)]
+        [ProducesResponseType(typeof(String), 404)]
+        [ProducesResponseType(typeof(String), 409)]
         [HttpPost("equipment")]
         public IActionResult PostEquipment(string vesselCode, [FromBody] Equipment equipment)
         {
@@ -61,6 +98,24 @@ namespace FPSOManagerApi_CS.Controllers
             }
         }
 
+        /// <summary>
+        /// Deactivates a list of equipment
+        /// </summary>
+        /// <remarks>
+        /// Sample request: PUT /FPSO/equipment
+        ///     
+        ///     [
+        ///         "equipment_code_example_1",
+        ///         "equipment_code_example_2",
+        ///         "equipment_code_example_1"
+        ///     ]
+        ///     
+        /// </remarks>
+        /// <param name="codes"></param>
+        /// <response code="204">Equipments deactivated</response>
+        /// <response code="404">Equipments Not Registered</response>   
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(String), 404)]
         [HttpPut("equipment")]
         public IActionResult PutInactiveEquipment([FromBody] List<String> codes)
         {
@@ -79,6 +134,19 @@ namespace FPSOManagerApi_CS.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all the active equipment in a vessel
+        /// </summary>
+        /// <remarks>
+        /// Sample request: GET /FPSO/vessel
+        ///     
+        /// </remarks>
+        /// <param name="vesselCode"></param>
+        /// <returns>All the active equipments in a vessel</returns>
+        /// <response code="200">Found Equipments from Vessel</response>
+        /// <response code="404">Vessel Not Registered</response>   
+        [ProducesResponseType(typeof(List<Equipment>), 200)]
+        [ProducesResponseType(typeof(String), 404)]
         [HttpGet("vessel")]
         public IActionResult GetVesselEquipment(String vesselCode)
         {   

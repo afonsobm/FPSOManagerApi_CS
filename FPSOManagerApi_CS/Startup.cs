@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using FPSOManagerApi_CS.DAL;
 using FPSOManagerApi_CS.Models;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace FPSOManagerApi_CS
 {
@@ -34,6 +37,26 @@ namespace FPSOManagerApi_CS
             var connection = Configuration.GetConnectionString("sqlite");
             services.AddDbContext<FPSODbContext>(options => options.UseSqlite(connection));
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "FPSO Tool Manager API",
+                    Description = "Manages the registration of vessels and their equipments.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Bruno Afonso",
+                        Email = "bruno.ma@poli.ufrj.br"
+                    }
+                });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
             services.AddScoped<FPSODal>();
             services.AddScoped<FPSOServices>();
         }
@@ -47,6 +70,17 @@ namespace FPSOManagerApi_CS
             }
 
             //app.UseHttpsRedirection();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FPSO Manager API");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
