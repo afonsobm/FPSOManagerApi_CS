@@ -38,7 +38,9 @@ dotnet run
 ```
 
 The REST API was configured to listen requests on http://localhost:5000 \
-Below are the endpoints of the API
+Below are the RESTful endpoints of the API\
+\
+Alternatively, you can use the SWAGGER UI by typing http://localhost:5000 on a browser.
 
 ### Post Vessel
 
